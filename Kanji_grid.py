@@ -25,6 +25,8 @@ from aqt.qt import (Qt, QAction, QStandardPaths,
 
 from . import data
 
+IS_QT6 = qtmajor > 5
+
 # FIXME: changing the defaults using addons ui requires restarting anki to take effect
 # TODO: config window based on the widget from KanjiGrid.setup
 #       (s/Settings/Defaults/; s/Generate/Save/; s/default: .*//)
@@ -112,14 +114,14 @@ class KanjiGridWebView(AnkiWebView):
         super().__init__()
         # Saved images are empty if the background is transparent; AnkiWebView
         # sets bg color to transparent by default
-        if qtmajor > 5:
+        if IS_QT6:
             self.setStyleSheet("background-color: white;")  # PyQt6
         else:
             self.page().setBackgroundColor(Qt.white)  # PyQt5
         self.save_png = ()
 
     def eventFilter(self, obj, evt):
-        if qtmajor > 5:
+        if IS_QT6:
         # PyQt6
             if not(evt.type() == QEvent.Type.Paint and self.save_png):
                 return False
@@ -130,9 +132,26 @@ class KanjiGridWebView(AnkiWebView):
 
         filename, oldsize = self.save_png
         self.save_png = ()
-
-        size = self._page.contentsSize().toSize()
-        image = QImage(size, QImage.Format_ARGB32)
+        current_page = self.page()
+        try:
+            # Qt6
+            size_f = current_page.contentsSize
+            if callable(size_f):
+                size = size_f().toSize()
+            else:
+                size = size_f.toSize()
+        except AttributeError:
+            # Qt5
+            try:
+                size = current_page.contentsSize()
+            except Exception as e:
+                size = QSize(800, 600)
+                showWarning(f"Error getting size: {str(e)}. Using default size.")
+        if IS_QT6:
+            image_format = QImage.Format.Format_ARGB32
+        else:
+            image_format = QImage.Format_ARGB32
+        image = QImage(size, image_format)
         painter = QPainter(image)
         self.render(painter)
         painter.end()
@@ -313,7 +332,7 @@ class KanjiGrid:
         return 0
 
     def savehtml(self, config):
-        fileName = QFileDialog.getSaveFileName(self.win, "Save Page", QStandardPaths.standardLocations(QStandardPaths.DesktopLocation)[0], "Web Page (*.html *.htm)")[0]
+        fileName = QFileDialog.getSaveFileName(self.win, "Save Page", QStandardPaths.standardLocations(QStandardPaths.StandardLocation.DesktopLocation)[0], "Web Page (*.html *.htm)")[0] if IS_QT6  else QFileDialog.getSaveFileName(self.win, "Save Page", QStandardPaths.standardLocations(QStandardPaths.DesktopLocation)[0], "Web Page (*.html *.htm)")[0]
         if fileName != "":
             mw.progress.start(immediate=True)
             if ".htm" not in fileName:
@@ -326,7 +345,7 @@ class KanjiGrid:
             showInfo("Page saved to %s!" % os.path.abspath(fileOut.name))
 
     def savepng(self):
-        fileName = QFileDialog.getSaveFileName(self.win, "Save Page", QStandardPaths.standardLocations(QStandardPaths.DesktopLocation)[0], "Portable Network Graphics (*.png)")[0]
+        fileName = QFileDialog.getSaveFileName(self.win, "Save Page", QStandardPaths.standardLocations(QStandardPaths.StandardLocation.DesktopLocation)[0], "Portable Network Graphics (*.png)")[0] if IS_QT6 else QFileDialog.getSaveFileName(self.win, "Save Page", QStandardPaths.standardLocations(QStandardPaths.DesktopLocation)[0], "Portable Network Graphics (*.png)")[0]
         if fileName != "":
             mw.progress.start(immediate=True)
             if ".png" not in fileName:
@@ -349,7 +368,7 @@ class KanjiGrid:
         notes = dict()
         timeNow = time.time()
         for i in cids:
-            card = mw.col.get_card(i) if qtmajor > 5 else mw.col.getCard(i)
+            card = mw.col.get_card(i) if IS_QT6 else mw.col.getCard(i)
             
             if card.nid not in notes:
                 note = card.note()
@@ -400,7 +419,7 @@ class KanjiGrid:
         # Anki 23
             deck_names = sorted([d[0] for d in decks])
         deckcb.addItems(deck_names)
-        if qtmajor > 5:
+        if IS_QT6:
             Expanding = QSizePolicy.Policy.Expanding
             Fixed = QSizePolicy.Policy.Fixed
         else:
@@ -473,7 +492,7 @@ class KanjiGrid:
         swin.setTabOrder(groupby, shnew)
         swin.setTabOrder(shnew, toolt)
         swin.resize(500, 400)
-        if qtmajor > 5:  # Anki 25+ (PyQt6)
+        if IS_QT6:  # Anki 25+ (PyQt6)
             dialog_result = swin.exec()
         else:             # Anki 23 (PyQt5)
             dialog_result = swin.exec_()
