@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# upstream: https://github.com/rpPH4kQocMjkm2Ve/kanjigrid 
+# upstream: https://github.com/Ajatt-Tools/kanjigrid
 # old_Upstream: https://github.com/tsudoko/kanjigrid
 # old_AnkiWeb:  https://ankiweb.net/shared/info/909972618
 
