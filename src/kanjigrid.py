@@ -1,7 +1,7 @@
 import shlex
 import types
 
-from aqt import gui_hooks, main, mw
+from aqt import gui_hooks, mw
 from aqt.qt import (
     QAction,
     QCheckBox,
@@ -26,14 +26,33 @@ from aqt.qt import (
 from aqt.webview import AnkiWebView
 
 from . import config_util, data, generate_grid, save, util, webview_util
+from ..ajt_common.restore_geom_dialog import AnkiSaveAndRestoreGeomDialog
+from ..helpers.consts import ADDON_NAME
+
+
+class KanjiGridDialog(AnkiSaveAndRestoreGeomDialog):
+    name = "ajt__kanjigrid"
+
+    def __init__(self, parent=None) -> None:
+        super().__init__(parent)
+        self.setWindowTitle(f"{ADDON_NAME} - Analyze known kanji")
+
+
+class KanjiGridResultDialog(AnkiSaveAndRestoreGeomDialog):
+    name = "ajt__kanjigrid_result"
+
+    def __init__(self, parent, window_flags) -> None:
+        super().__init__(parent, window_flags)
+        self.setWindowTitle(f"{ADDON_NAME} - Analyze known kanji - Result")
 
 
 class KanjiGrid:
-    def __init__(self, mw: main.AnkiQt) -> None:
-        if mw:
-            self.menuAction = QAction("Generate Kanji Grid", mw, triggered=self.setup)
-            mw.form.menuTools.addSeparator()
-            mw.form.menuTools.addAction(self.menuAction)
+    def __init__(self, cfg: config_util.KanjiGridConfigProxy, menu_action: QAction) -> None:
+        if not mw:
+            raise RuntimeError("mw is None")
+        print("STARTING KANJI GRID")
+        self.cfg = cfg
+        qconnect(menu_action.triggered, self.setup)
 
     def link_handler(self, link: str, config: types.SimpleNamespace, deckname: str) -> None:
         link_prefix = link[:2]
@@ -49,7 +68,7 @@ class KanjiGrid:
 
     def displaygrid(self, config: types.SimpleNamespace, deckname: str, units: dict) -> None:
         generated_html = generate_grid.generate(mw, config, units)
-        self.win = QDialog(mw, Qt.WindowType.Window)
+        self.win = KanjiGridResultDialog(mw, Qt.WindowType.Window)
         current_win = self.win
         self.wv = webview_util.init_webview()
         current_wv = self.wv
@@ -92,7 +111,7 @@ class KanjiGrid:
             self.displaygrid(config, util.get_deck_name(mw, config), units)
 
     def setup(self) -> None:
-        config = types.SimpleNamespace(**config_util.get_config(mw))
+        config = types.SimpleNamespace(**self.cfg.get_config())
         config.did = mw.col.conf["curDeck"]
         def change_did(deckname: str) -> None:
             if deckname == "*":
@@ -107,7 +126,7 @@ class KanjiGrid:
 
         data.init_groups()
 
-        setup_win = QDialog(mw)
+        setup_win = KanjiGridDialog(mw)
         vertical_layout = QVBoxLayout()
 
         deck_horizontal_layout = QHBoxLayout()
@@ -346,7 +365,7 @@ class KanjiGrid:
         data_tab_vertical_layout.addLayout(save_reset_buttons_horizontal_layout)
 
         def save_settings(config: types.SimpleNamespace) -> None:
-            config_util.set_config(mw, set_config_attributes(config))
+            self.cfg.set_config(set_config_attributes(config))
 
         save_settings_button = QPushButton("Save Settings", clicked = lambda _: save_settings(config))
         save_reset_buttons_horizontal_layout.addWidget(save_settings_button)
@@ -354,7 +373,7 @@ class KanjiGrid:
         def reset_settings(setup_win: QDialog) -> None:
             reply = QMessageBox.question(setup_win, "Reset Settings", "Confirm reset settings")
             if reply == QMessageBox.StandardButton.Yes:
-                config_util.reset_config(mw)
+                self.cfg.reset_config()
                 setup_win.reject()
 
         reset_settings_button = QPushButton("Reset Settings", clicked = lambda _: reset_settings(setup_win))

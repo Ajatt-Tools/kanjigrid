@@ -1,5 +1,7 @@
 import types
 
+from aqt import AnkiQt
+
 config_schema = {
     "version": {
         "default": 2,
@@ -98,29 +100,41 @@ config_schema = {
     },
 }
 
-def set_config(mw, namespace_config: types.SimpleNamespace) -> None:
-    config = dict(namespace_config.__dict__)
-    for key in list(config.keys()):
-        if key not in config_schema:
-            del config[key]
-    mw.addonManager.writeConfig(__name__, config)
 
-def get_config(mw) -> dict:
-    config = mw.addonManager.getConfig(__name__)
+class KanjiGridConfigProxy:
+    def __init__(self, mw: AnkiQt) -> None:
+        self._mw = mw
 
-    if "defaults" in config: #migrate legacy configs that nested settings inside "defaults"
-        config = config["defaults"]
-        mw.addonManager.writeConfig(__name__, config)
+    def _write_config_dict(self, config: dict) -> None:
+        self._mw.addonManager.writeConfig(__name__, config)
 
-    if config_schema["version"]["default"] > config["version"]:
-        config = migrate_config(config)
-        mw.addonManager.writeConfig(__name__, config)
+    def _get_config_dict(self) -> dict:
+        return self._mw.addonManager.getConfig(__name__)
 
-    return validate_config(config)
+    def set_config(self, namespace_config: types.SimpleNamespace) -> None:
+        config = dict(namespace_config.__dict__)
+        for key in list(config.keys()):
+            if key not in config_schema:
+                del config[key]
+        self._write_config_dict(config)
 
-def reset_config(mw) -> None:
-    default_config = dict(map(lambda item: (item[0], item[1]["default"]), config_schema.items()))
-    mw.addonManager.writeConfig(__name__, default_config)
+    def get_config(self) -> dict:
+        config = self._get_config_dict()
+
+        if "defaults" in config: #migrate legacy configs that nested settings inside "defaults"
+            config = config["defaults"]
+            self._write_config_dict(config)
+
+        if config_schema["version"]["default"] > config["version"]:
+            config = migrate_config(config)
+            self._write_config_dict(config)
+
+        return validate_config(config)
+
+    def reset_config(self) -> None:
+        default_config = dict(map(lambda item: (item[0], item[1]["default"]), config_schema.items()))
+        self._write_config_dict(default_config)
+
 
 def validate_config(config: dict) -> dict:
     for config_schema_key in config_schema:
