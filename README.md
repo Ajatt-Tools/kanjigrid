@@ -101,15 +101,13 @@ Documentation for the Kanji Grid config.
 
 ## Custom Groupings
 
-Extra options can be added to the `Group by` dropdown by adding the data files to Kanji Grid Kuuube. See [Grouping Data Format](https://github.com/Kuuuube/kanjigrid/blob/master/docs/grouping_data_format.md) for an explanation of the grouping data format.
+Extra options can be added to the `Group by` dropdown by adding the data files to Kanji Grid for AJT Japanese.
+See [Grouping Data Format](docs/grouping_data_format.md) for an explanation of the grouping data format.
 
 User-defined groupings should be added in `/user_files/data/`. Do not place files in the main `/data/` folder as these files will be deleted when the addon is updated.
 
-If you have created a grouping that you think is generally useful to users of the target language, please make a [pull request](https://github.com/Kuuuube/kanjigrid/pulls) on github with your additions. Groupings that are only useful to niche communities or individual users will not be accepted.
-
-## Timelapse Data
-
-See: [Kanjigrid Timelapse](https://github.com/Kuuuube/kanjigrid-timelapse).
+If you have created a grouping that you think is generally useful to users of the target language,
+please make a [pull request](https://github.com/Ajatt-Tools/kanjigrid/pulls) on github with your additions. Groupings that are only useful to niche communities or individual users will not be accepted.
 
 ## Improvements and Bug Fixes
 
@@ -281,6 +279,7 @@ Changelog compared to the old kanji grid add-on.
 
 ## Info
 
-[Github Repository](https://github.com/Kuuuube/kanjigrid)
-
-[Report Issues Here](https://github.com/Kuuuube/kanjigrid/issues)
+- [Github Repository](https://github.com/Ajatt-Tools/kanjigrid)
+- [Original GitHub Repository](https://github.com/tsdko/kanjigrid)
+- [Kuube Kanji Grid](https://github.com/Kuuuube/kanjigrid) - merged into this branch.
+- [Report Issues Here](https://github.com/Ajatt-Tools/kanjigrid/issues)
