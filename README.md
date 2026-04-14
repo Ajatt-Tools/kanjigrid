@@ -1,26 +1,20 @@
-# Kanji Grid Kuuube
+# Kanji Grid for AJT Japanese
 
-Kanji Grid Kuuube, Kanji Grid for Anki 23.10+ with improvements and bug fixes.
+Kanji Grid bundled with AJT Japanese.
 
-![](https://raw.githubusercontent.com/Kuuuube/kanjigrid/master/kanji_grid_banner.png)
+![image](https://raw.githubusercontent.com/Ajatt-Tools/kanjigrid/master/kanji_grid_banner.png)
 
 ## Installation
 
-1. Open Anki.
+Since October 10, 2025,
+Kanji Grid is bundled with [AJT Japanese](https://ajatt.top/blog/anki-japanese-support.html).
+If you have installed AJT Japanese, you don't need any extra actions.
 
-2. On the top menu, go to `Tools` > `Add-ons`.
-
-3. Click `Get Add-ons...`.
-
-4. Input `1610304449`.
-
-5. Click `OK`.
-
-6. Restart Anki.
+[AnkiWeb](https://ankiweb.net/shared/info/1344485230)
 
 ## Usage
 
-1. On the top menu, go to `Tools` > `Generate Kanji Grid`.
+1. On the top menu, go to `AJT` > `Analyze known kanji...`.
 
 2. Select the deck to generate from with the `Deck` dropdown.
 
@@ -42,9 +36,9 @@ Before troubleshooting your issue, restart Anki. Especially after updating addon
 
 2. In some cases, if you have edited the config file, you may run into issues. You can fix this by resetting the config:
 
-    `Tools > Add-ons > Kanji Grid Kuuube > Config`, `Restore Defaults`, `Save`, Restart Anki.
+    `AJT > AJT Japanese > Config > Advanced`, `Restore Defaults`, `Save`, Restart Anki.
 
-3. `Kanji Grid` versions uploaded by other developers cannot be installed at the same time as `Kanji Grid Kuuube`.
+3. `Kanji Grid` versions uploaded by other developers cannot be installed at the same time as `AJT Japanese`.
 
     `Tools` > `Add-ons` > Select the intruding `Kanji Grid` add-on > `Delete`
 
