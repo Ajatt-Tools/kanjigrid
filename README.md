@@ -2,7 +2,7 @@
 
 Kanji Grid bundled with AJT Japanese.
 
-![image](https://github.com/Ajatt-Tools/kanjigrid/blob/ajt_japanese/kanji_grid_banner.png?raw=true)
+![image](kanji_grid_banner.png?raw=true)
 
 ## Installation
 
