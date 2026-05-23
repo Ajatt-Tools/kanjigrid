@@ -222,6 +222,10 @@ Changelog compared to the old kanji grid add-on.
 
 - Added JPDBv2 Kanji Frequency List grouping.
 
+- Added KANJIDIC2 Stroke Count grouping.
+
+- Added Taiwan Compulsory Education Characters grouping.
+
 - Updated Kanji Kentei Level grouping to match latest data from 日本漢字能力検定協会 and Jitenon.
 
 - Renamed `Probably Chinese` Kanji Kentei Level sort category to `Non-Kanji Kentei`.
