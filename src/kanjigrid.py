@@ -30,12 +30,15 @@ from ..ajt_common.restore_geom_dialog import AnkiSaveAndRestoreGeomDialog
 from ..helpers.consts import ADDON_NAME
 
 
+ACTION_NAME = "Analyze known kanji"
+
+
 class KanjiGridDialog(AnkiSaveAndRestoreGeomDialog):
     name = "ajt__kanjigrid"
 
     def __init__(self, parent=None) -> None:
         super().__init__(parent)
-        self.setWindowTitle(f"{ADDON_NAME} - Analyze known kanji")
+        self.setWindowTitle(f"{ADDON_NAME} - {ACTION_NAME}")
 
 
 class KanjiGridResultDialog(AnkiSaveAndRestoreGeomDialog):
@@ -43,7 +46,7 @@ class KanjiGridResultDialog(AnkiSaveAndRestoreGeomDialog):
 
     def __init__(self, parent, window_flags) -> None:
         super().__init__(parent, window_flags)
-        self.setWindowTitle(f"{ADDON_NAME} - Analyze known kanji - Result")
+        self.setWindowTitle(f"{ADDON_NAME} - {ACTION_NAME} - Result")
 
 
 class KanjiGrid:
