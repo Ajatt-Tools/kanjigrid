@@ -28,7 +28,7 @@ ignore = [
     "PIE808", #Checks for `range` calls with an unnecessary `start` argument.
     "C417", #Checks for unnecessary `map()` calls with lambda functions.
 ]
-target-version = "py310" #Set minimum version to 3.9 due to Anki still shipping 3.9 in windows packages as of 24.11 (Nov 26, 2024)
+target-version = "py310" #Set minimum version to 3.10 due to Anki still shipping 3.10 in windows packages as of 26.05.
 
 [lint.per-file-ignores]
 "logger.py" = [
